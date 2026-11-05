@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuroplasticidad: Tu Cerebro se Transforma</title>
+    <style>
+        /* --- ESTILOS GENERALES --- */
+        :root {
+            --primary: #4a90e2; /* Azul cerebro */
+            --secondary: #50e3c2; /* Verde sinapsis */
+            --accent: #f5a623; /* Naranja energía */
+            --dark: #2c3e50;
+            --light: #f4f7f6;
+            --text: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* --- CABECERA --- */
+        header {
+            background: linear-gradient(135deg, var(--primary), #357abd);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        nav {
+            background-color: var(--dark);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--dark);
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        /* --- SECCIÓN DE TEXTO PRINCIPAL --- */
+        .texto-principal {
+            background: #eef7ff;
+            border-left: 5px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 0 10px 10px 0;
+            margin: 1.5rem 0;
+        }
+
+        .texto-principal strong {
+            color: var(--primary);
+        }
+
+        /* --- SIMULADOR INTERACTIVO --- */
+        .simulador {
+            background: linear-gradient(to right, #e0f7fa, #e8f5e9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            border: 2px dashed var(--secondary);
+        }
+
+        #camino {
+            width: 100%;
+            height: 100px;
+            background-color: #fff;
+            border-radius: 10px;
+            margin: 1rem 0;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Representación visual del sendero/autopista */
+        .sendero {
+            height: 8px;
+            background-color: #bbb;
+            width: 20%;
+            border-radius: 5px;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        .autopista {
+            height: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--primary));
+            width: 90%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px var(--secondary);
+            transition: all 0.5s ease;
+        }
+
+        /* Chispas eléctricas (simulación) */
+        .chispa {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: gold;
+            border-radius: 50%;
+            opacity: 0;
+            animation: chispaAnim 1s infinite;
+        }
+
+        @keyframes chispaAnim {
+            0% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.5); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        .contador {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin: 0.5rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        button:hover {
+            background-color: #357abd;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button.secondary {
+            background-color: var(--accent);
+        }
+
+        button.secondary:hover {
+            background-color: #d48a1a;
+        }
+
+        /* --- QUIZ INTERACTIVO --- */
+        .quiz-container {
+            background: #fff8e1;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid var(--accent);
+            margin-top: 1.5rem;
+        }
+
+        .opcion {
+            display: block;
+            background: white;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .opcion:hover {
+            border-color: var(--primary);
+            background: #f0f8ff;
+        }
+
+        .opcion.correcta {
+            background: #c8e6c9;
+            border-color: #2e7d32;
+            color: #1b5e20;
+            font-weight: bold;
+        }
+
+        .opcion.incorrecta {
+            background: #ffcdd2;
+            border-color: #c62828;
+            color: #b71c1c;
+        }
+
+        .feedback {
+            font-weight: bold;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        /* --- TIPS Y RECOMENDACIONES --- */
+        .grid-tips {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--secondary);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h4 {
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .card ul {
+            padding-left: 1.2rem;
+        }
+
+        .card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- PADRES --- */
+        .padres {
+            background: #f3e5f5;
+            border-left: 5px solid #8e24aa;
+        }
+
+        .padres h2 {
+            color: #6a1b9a;
+            border-bottom-color: #ce93d8;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            text-align: center;
+            opacity: 0.8;
+        }
+        .btn-juego-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: linear-gradient(135deg, #4a90e2, #1b6756);
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.2rem;
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        box-shadow: 0 6px 18px rgba(74, 144, 226, 0.4);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s;
+        border: 3px solid #fff;
+    }
+
+    .btn-juego-inline:hover,
+    .btn-juego-inline:focus-visible {
+        transform: scale(1.05) translateY(-2px);
+        box-shadow: 0 10px 25px rgba(74, 144, 226, 0.6);
+        background: linear-gradient(135deg, #1b4064, #064336);
+        outline: 3px solid #2c3e50;
+        outline-offset: 3px;
+    }
+
+    .btn-juego-inline:active {
+        transform: scale(0.97);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .btn-juego-inline {
+            transition: none;
+        }
+    }
+
+        /* --- ACCESIBILIDAD --- */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            nav ul { gap: 0.5rem; }
+            nav a { font-size: 0.9rem; padding: 0.3rem 0.6rem; }
+            section { padding: 1.2rem; }
+        }
+
+        /* Modo alto contraste para accesibilidad */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary: #0056b3;
+                --secondary: #00897b;
+            }
+        }
+
+        /* Animación de pulso para llamar la atención */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🧠 Neuroplasticidad: Tu Cerebro se Transforma</h1>
+        <p>Aprender no es guardar datos, ¡es construir autopistas en tu mente!</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#que-es">¿Qué es?</a></li>
+            <li><a href="#simulador">Simulador</a></li>
+            <li><a href="#quiz">Pon a Prueba</a></li>
+            <li><a href="#tips">Tips de Estudio</a></li>
+            <li><a href="#padres">Para Padres</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- SECCIÓN 1: TEXTO PRINCIPAL -->
+        <section id="que-es">
+            <h2>🔬 ¿Qué ocurre en tu cabeza cuando aprendes?</h2>
+            <div class="texto-principal">
+                <p>¿Alguna vez te preguntaste qué ocurre en tu cabeza cada vez que entiendes algo nuevo? Aprender no es simplemente guardar información en un "disco rígido", sino <strong>modificar físicamente la estructura de tu cerebro</strong>. Este fenómeno se conoce como <strong>neuroplasticidad</strong>.</p>
+                
+                <p>Cuando aprendes un concepto por primera vez, un grupo de neuronas se activa y establece un camino de comunicación mediante la <strong>sinapsis</strong>. Al principio, este camino es débil y frágil, como un sendero apenas marcado en el césped. Si no vuelves a usar ese camino, la maleza crece y la conexión se borra (es decir, lo olvidas).</p>
+                
+                <p>Sin embargo, cada vez que repasas o vuelves a estudiar un tema, impulsos eléctricos vuelven a recorrer esas mismas redes neuronales. La repetición fortalece las sinapsis y las recubre de <strong>mielina</strong>, transformando ese débil sendero en una verdadera <strong>"autopista de información"</strong>. A este proceso se lo llama <strong>consolidación sináptica</strong>.</p>
+            </div>
+            <p>💡 <strong>Idea clave:</strong> Cada vez que repasas, haces el esfuerzo de recordar o explicas algo a alguien, estás regando esa autopista para que sea más rápida y duradera.</p>
+        </section>
+
+        <!-- SECCIÓN 2: SIMULADOR INTERACTIVO -->
+        <section id="simulador">
+            <h2>🛣️ Simulador: De Sendero a Autopista</h2>
+            <p>Haz clic en <strong>"¡Repasar!"</strong> para ver cómo se fortalece la conexión. Nota cómo al principio el sendero es débil, pero con la repetición se convierte en una autopista brillante.</p>
+            
+            <div class="simulador">
+                <div id="camino">
+                    <div id="via" class="sendero"></div>
+                </div>
+                <p class="contador">Repasos: <span id="contador-repasos">0</span></p>
+                <p id="mensaje-estado" style="font-weight: bold; color: var(--dark);">Estado: Sendero débil 🍂</p>
+                <button onclick="repasar()">¡Repasar! 🔄</button>
+                <button class="secondary" onclick="reiniciarSimulador()">Reiniciar 🔁</button>
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 1rem; text-align: center; color: #666;">*Cada repaso fortalece la sinapsis y añade mielina (la capa brillante).</p>
+        </section>
+
+        <!-- SECCIÓN 3: QUIZ INTERACTIVO -->
+        <section id="quiz">
+            <h2>🧩 Pon a Prueba lo que Aprendiste</h2>
+            <p>Responde esta pregunta para ver si tu autopista está bien consolidada.</p>
+            
+            <div class="quiz-container" id="quiz-container">
+                <p style="font-weight: bold; font-size: 1.1rem;">¿Qué es la consolidación sináptica?</p>
+                <div class="opcion" onclick="seleccionarOpcion(this, false)">A) Guardar información en un disco rígido.</div>
+                <div class="opcion" onclick="seleccionarOpcion(this, true)">B) El proceso por el cual la repetición fortalece las sinapsis y las recubre de mielina.</div>
+                <div class="opcion" onclick="seleccionarOpcion(this, false)">C) Olvidar lo que no usamos.</div>
+                <div class="opcion" onclick="seleccionarOpcion(this, false)">D) La velocidad con la que leemos.</div>
+                <div class="feedback" id="feedback-quiz"></div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: TIPS DE ESTUDIO -->
+        <section id="tips">
+            <h2>📚 Tips de Estudio para Alumnos</h2>
+            <p>No se trata de estudiar más horas, sino de <strong>hacer cosas distintas y pensadas</strong>. Aquí tienes estrategias basadas en la neuroplasticidad.</p>
+            
+            <div class="grid-tips">
+                <div class="card">
+                    <h4>🔄 Repaso Espaciado</h4>
+                    <p>No estudies todo el día antes del examen. Repasa hoy, en 2 días, en 1 semana... Así fortaleces la mielina.</p>
+                </div>
+                <div class="card">
+                    <h4>🗣️ Explica a alguien</h4>
+                    <p>Enseñar es la mejor forma de aprender. Al explicar, tu cerebro reorganiza la información y crea nuevas conexiones.</p>
+                </div>
+                <div class="card">
+                    <h4>✍️ Haz esquemas y dibujos</h4>
+                    <p>Usar colores y formas activa más áreas del cerebro. ¡No todo es leer!</p>
+                </div>
+                <div class="card">
+                    <h4>🧘‍♀️ Alterna materias</h4>
+                    <p>Estudiar 30 min de matemáticas y luego 30 de historia (intercalado) fortalece más que estudiar 2 horas seguidas de lo mismo.</p>
+                </div>
+                <div class="card">
+                    <h4>😴 Duerme bien</h4>
+                    <p>Durante el sueño, el cerebro consolida lo aprendido. Dormir 8 horas es parte del estudio.</p>
+                </div>
+                <div class="card">
+                    <h4>🎯 Practica el recuerdo activo</h4>
+                    <p>Cierra el libro y trata de recordar lo que leíste. Ese esfuerzo es el que crea la autopista.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: RECOMENDACIONES PARA PADRES -->
+        <section id="padres" class="padres">
+            <h2>👨‍👩‍👧‍👦 Recomendaciones para Padres</h2>
+            <p>Los padres son los principales modelos y guías en el desarrollo del cerebro de sus hijos. Aquí algunas pautas para acompañar el aprendizaje.</p>
+            
+            <div class="grid-tips">
+                <div class="card" style="border-top-color: #8e24aa;">
+                    <h4>🥗 Alimentación</h4>
+                    <ul>
+                        <li>Ofrece frutas, frutos secos y verduras. El cerebro consume mucha energía.</li>
+                        <li>Evita comidas muy pesadas antes de estudiar.</li>
+                        <li>El omega-3 (pescado) y el hierro son clave para la memoria.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top-color: #8e24aa;">
+                    <h4>😴 Horas de sueño</h4>
+                    <ul>
+                        <li>Los adolescentes necesitan entre 8 y 10 horas de sueño.</li>
+                        <li>Establece una rutina sin pantallas 1 hora antes de dormir.</li>
+                        <li>El sueño consolida lo aprendido durante el día.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top-color: #8e24aa;">
+                    <h4>📖 Educar con el ejemplo</h4>
+                    <ul>
+                        <li>Lee delante de tus hijos, aprende algo nuevo (un idioma, un instrumento).</li>
+                        <li>Comenta lo que aprendiste hoy. Demuestra curiosidad.</li>
+                        <li>Valora el esfuerzo más que las notas.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top-color: #8e24aa;">
+                    <h4>🗣️ Ambiente de confianza</h4>
+                    <ul>
+                        <li>Pregunta "¿Qué aprendiste hoy?" en lugar de "¿Qué nota sacaste?".</li>
+                        <li>Permite el error como parte del aprendizaje (la neuroplasticidad se activa al corregir).</li>
+                        <li>Celebra los pequeños avances.</li>
+                    </ul>
+                </div>
+                <div class="card" style="border-top-color: #8e24aa;">
+                    <h4>📖 Lean en Familia</h4>
+                    <ul>
+                        <li><strong>Estimula patrones neuronales compartidos:</strong> al leer y comentar juntos, padres e hijos activan las mismas redes de atención, lenguaje y recompensa.</li>
+                        <li><strong>El afecto facilita la memoria:</strong> la dopamina y la oxitocina que libera el vínculo ayudan a consolidar lo aprendido.</li>
+                        <li><strong>20 minutos diarios:</strong> cualquier texto sirve (novela, cómic, noticia curiosa).</li>
+                        <li><strong>Ronda de preguntas:</strong> "¿Qué te sorprendió?", "¿Qué harías tú?".</li>
+                        <li><strong>Aprendan algo nuevo juntos:</strong> un idioma, una receta, un experimento casero.</li>
+                        <li><strong>Modelen curiosidad:</strong> si te ven leer y asombrarte, aprenderán que aprender es valioso.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div style="text-align: center; margin: 2rem 0;">
+                <a href="juego.html" class="btn-juego-inline" aria-label="Ir al juego Memoria Relámpago">
+                    <span aria-hidden="true">🎮</span> ¡Jugar Memoria Relámpago!
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>🧠 Página educativa sobre Neuroplasticidad - Creada para estudiantes de secundaria y sus familias.</p>
+        <p>Recuerda: cada vez que repasas, tu cerebro se transforma. ¡Sigue construyendo autopistas!</p>
+    </footer>
+
+    <script>
+        // --- SIMULADOR ---
+        let repasos = 0;
+        const via = document.getElementById('via');
+        const contador = document.getElementById('contador-repasos');
+        const mensaje = document.getElementById('mensaje-estado');
+
+        function repasar() {
+            repasos++;
+            contador.textContent = repasos;
+
+            // Actualizar la barra visual
+            if (repasos === 0) {
+                via.className = 'sendero';
+                via.style.width = '20%';
+            } else if (repasos < 3) {
+                via.className = 'sendero';
+                via.style.width = '20%';
+                via.style.backgroundColor = '#bbb';
+            } else if (repasos < 6) {
+                via.className = 'sendero';
+                via.style.width = '50%';
+                via.style.backgroundColor = '#f5a623';
+            } else if (repasos < 10) {
+                via.className = 'autopista';
+                via.style.width = '70%';
+            } else {
+                via.className = 'autopista';
+                via.style.width = '95%';
+            }
+
+            // Cambiar mensaje según repasos
+            if (repasos === 1) {
+                mensaje.textContent = 'Estado: Sendero débil 🍂 (las conexiones son frágiles)';
+            } else if (repasos === 3) {
+                mensaje.textContent = 'Estado: Sendero marcado 🌱 (la repetición empieza a funcionar)';
+            } else if (repasos === 6) {
+                mensaje.textContent = 'Estado: Camino en construcción 🚧 (la mielina se deposita)';
+            } else if (repasos === 10) {
+                mensaje.textContent = 'Estado: ¡AUTOPISTA DE INFORMACIÓN! 🏎️✨ (consolidación sináptica lograda)';
+                // Efecto de chispas
+                crearChispas();
+            } else {
+                mensaje.textContent = 'Estado: Autopista súper rápida 🏁 (aprendizaje consolidado)';
+            }
+        }
+
+        function reiniciarSimulador() {
+            repasos = 0;
+            contador.textContent = '0';
+            via.className = 'sendero';
+            via.style.width = '20%';
+            via.style.backgroundColor = '#bbb';
+            mensaje.textContent = 'Estado: Sendero débil 🍂';
+            // Limpiar chispas
+            document.querySelectorAll('.chispa').forEach(e => e.remove());
+        }
+
+        function crearChispas() {
+            const camino = document.getElementById('camino');
+            for (let i = 0; i < 10; i++) {
+                const chispa = document.createElement('div');
+                chispa.classList.add('chispa');
+                chispa.style.left = Math.random() * 100 + '%';
+                chispa.style.top = Math.random() * 100 + '%';
+                chispa.style.animationDelay = Math.random() * 2 + 's';
+                camino.appendChild(chispa);
+                // Eliminar después de un tiempo
+                setTimeout(() => chispa.remove(), 3000);
+            }
+        }
+
+        // --- QUIZ ---
+        function seleccionarOpcion(elemento, esCorrecta) {
+            // Deshabilitar clics en otras opciones (para evitar múltiples respuestas)
+            const opciones = document.querySelectorAll('.opcion');
+            opciones.forEach(op => {
+                op.onclick = null;
+                op.style.cursor = 'default';
+            });
+
+            const feedback = document.getElementById('feedback-quiz');
+
+            if (esCorrecta) {
+                elemento.classList.add('correcta');
+                feedback.textContent = '¡Excelente! Has comprendido el concepto de consolidación sináptica. ¡Tu autopista está creciendo! 🎉';
+                feedback.style.display = 'block';
+                feedback.style.backgroundColor = '#c8e6c9';
+                feedback.style.color = '#1b5e20';
+            } else {
+                elemento.classList.add('incorrecta');
+                // Marcar la correcta
+                opciones.forEach(op => {
+                    if (op.textContent.includes('B)')) {
+                        op.classList.add('correcta');
+                    }
+                });
+                feedback.textContent = 'Casi... La respuesta correcta es la B. La consolidación sináptica es el proceso por el cual la repetición fortalece las sinapsis y las recubre de mielina. ¡Sigue repasando! 💪';
+                feedback.style.display = 'block';
+                feedback.style.backgroundColor = '#ffcdd2';
+                feedback.style.color = '#b71c1c';
+            }
+        }
+
+        // --- SMOOTH SCROLL PARA NAVEGACIÓN (opcional, ya está con CSS scroll-behavior) ---
+        // Pero añadimos un pequeño retraso para que el sticky nav no tape el título
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const offset = 70; // Altura aproximada del nav
+                    const elementPosition = targetElement.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

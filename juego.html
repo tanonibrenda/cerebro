@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memoria Relámpago - Juego de Neuroplasticidad</title>
+<style>
+    :root {
+        --primary: #4a90e2;
+        --secondary: #50e3c2;
+        --accent: #f5a623;
+        --dark: #2c3e50;
+        --light: #f4f7f6;
+        --text: #333;
+        --correct: #2e7d32;
+        --incorrect: #c62828;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+        color: var(--primary);
+        font-size: 2.2rem;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    header p {
+        color: var(--dark);
+        font-size: 1rem;
+    }
+
+    .contenedor {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    /* --- PANTALLAS --- */
+    .pantalla {
+        display: none;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .pantalla.activa {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+        color: var(--primary);
+        border-bottom: 3px solid var(--secondary);
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    p {
+        margin-bottom: 1rem;
+    }
+
+    button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.9rem 2rem;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        margin: 0.5rem;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    button:hover {
+        background-color: #357abd;
+        transform: scale(1.05);
+    }
+
+    button:active {
+        transform: scale(0.95);
+    }
+
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    button.secondary {
+        background-color: var(--accent);
+    }
+
+    button.secondary:hover {
+        background-color: #d48a1a;
+    }
+
+    button.danger {
+        background-color: var(--incorrect);
+    }
+
+    button.danger:hover {
+        background-color: #a01f1f;
+    }
+
+    /* --- PALABRAS PARA MEMORIZAR --- */
+    .palabras-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .palabra-tarjeta {
+        background: linear-gradient(135deg, var(--primary), #357abd);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-size: 1.3rem;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        animation: popIn 0.3s ease;
+    }
+
+    @keyframes popIn {
+        from { transform: scale(0); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+
+    /* --- TEMPORIZADOR --- */
+    .temporizador {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--incorrect);
+        text-align: center;
+        margin: 1rem 0;
+        min-height: 2.5rem;
+    }
+
+    .barra-tiempo {
+        width: 100%;
+        height: 15px;
+        background: #eee;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    .barra-tiempo-interior {
+        height: 100%;
+        background: linear-gradient(90deg, var(--secondary), var(--accent), var(--incorrect));
+        border-radius: 10px;
+        transition: width 1s linear;
+    }
+
+    /* --- INPUTS --- */
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        margin: 1.5rem 0;
+    }
+
+    .input-group label {
+        font-weight: bold;
+        color: var(--dark);
+    }
+
+    .input-group input {
+        padding: 0.8rem 1rem;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        transition: border 0.3s;
+    }
+
+    .input-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .input-group input.correcta {
+        border-color: var(--correct);
+        background: #e8f5e9;
+    }
+
+    .input-group input.incorrecta {
+        border-color: var(--incorrect);
+        background: #ffebee;
+    }
+
+    /* --- FASE ASOCIACIÓN VISUAL --- */
+    .asociacion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+    }
+
+    .asociacion-item {
+        background: #f0f8ff;
+        border-radius: 15px;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        animation: popIn 0.4s ease;
+        border: 2px solid var(--secondary);
+    }
+
+    .asociacion-item .emoji {
+        font-size: 3.5rem;
+        display: block;
+        margin-bottom: 0.5rem;
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    .asociacion-item .texto {
+        font-weight: bold;
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    .contador-vueltas {
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--accent);
+        margin: 1rem 0;
+    }
+
+    /* --- RESULTADOS --- */
+    .resultado-caja {
+        background: #f0f8ff;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border-left: 5px solid var(--primary);
+    }
+
+    .resultado-caja h3 {
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .puntaje-grande {
+        font-size: 3rem;
+        font-weight: bold;
+        text-align: center;
+        margin: 1rem 0;
+    }
+
+    .puntaje-grande .bueno { color: var(--correct); }
+    .puntaje-grande .regular { color: var(--accent); }
+    .puntaje-grande .malo { color: var(--incorrect); }
+
+    .lista-revision {
+        list-style: none;
+        margin-top: 1rem;
+    }
+
+    .lista-revision li {
+        padding: 0.5rem;
+        margin: 0.3rem 0;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .lista-revision li.acerto {
+        background: #e8f5e9;
+        color: var(--correct);
+    }
+
+    .lista-revision li.fallo {
+        background: #ffebee;
+        color: var(--incorrect);
+    }
+
+    .lista-revision li .check { margin-right: 0.5rem; }
+
+    .comparativa {
+        background: #fff8e1;
+        border: 2px dashed var(--accent);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+
+    .comparativa .numeros {
+        display: flex;
+        justify-content: space-around;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .comparativa .numero-item {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .comparativa .numero-item .valor {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary);
+    }
+
+    .comparativa .numero-item .etiqueta {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .mensaje-final {
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 10px;
+    }
+
+    .mensaje-final.mejoro {
+        background: #c8e6c9;
+        color: var(--correct);
+    }
+
+    .mensaje-final.igual {
+        background: #fff9c4;
+        color: #f57f17;
+    }
+
+    .mensaje-final.empeoro {
+        background: #ffcdd2;
+        color: var(--incorrect);
+    }
+
+    /* --- INSTRUCCIONES --- */
+    .instrucciones {
+        background: #eef7ff;
+        border-left: 5px solid var(--primary);
+        padding: 1rem 1.5rem;
+        border-radius: 0 10px 10px 0;
+        margin: 1rem 0;
+    }
+
+    .instrucciones ul {
+        padding-left: 1.5rem;
+    }
+
+    .instrucciones li {
+        margin-bottom: 0.5rem;
+    }
+
+    /* --- CONTADOR ACIERTOS EN VIVO --- */
+    .contador-vivo {
+        position: sticky;
+        top: 10px;
+        background: var(--dark);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        display: inline-block;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        z-index: 10;
+    }
+
+    @media (max-width: 600px) {
+        header h1 { font-size: 1.6rem; }
+        .contenedor { padding: 1.2rem; }
+        .palabra-tarjeta { font-size: 1rem; padding: 0.7rem 1rem; }
+        .asociacion-item .emoji { font-size: 2.5rem; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>🧠 Memoria Relámpago</h1>
+    <p>¡Demuestra cómo tu cerebro construye autopistas con la repetición y las imágenes!</p>
+</header>
+
+<div class="contenedor">
+
+    <!-- ================= PANTALLA INICIO ================= -->
+    <div id="pantalla-inicio" class="pantalla activa">
+        <h2>🚀 ¡Bienvenido al desafío!</h2>
+        <div class="instrucciones">
+            <p><strong>¿Cómo se juega?</strong></p>
+            <ul>
+                <li><strong>Fase 1:</strong> Verás 10 palabras durante 10 segundos. Luego, escríbelas lo más rápido que puedas.</li>
+                <li><strong>Fase 2:</strong> Verás las mismas 10 palabras 3 veces, cada una asociada a un dibujo (emoji). Esto refuerza tu memoria visual.</li>
+                <li><strong>Fase 3:</strong> Vuelve a escribir las palabras. ¡Comprobaremos si recordaste más!</li>
+            </ul>
+            <p>💡 <em>Idea científica:</em> La repetición y las asociaciones visuales fortalecen las sinapsis (neuroplasticidad). ¿Notarás la diferencia?</p>
+        </div>
+        <div style="text-align: center;">
+            <button onclick="iniciarJuego()">¡Comenzar Juego! 🎮</button>
+        </div>
+    </div>
+
+    <!-- ================= PANTALLA FASE 1: MEMORIZAR ================= -->
+    <div id="pantalla-fase1" class="pantalla">
+        <h2>👀 Fase 1: Observa y memoriza</h2>
+        <p>Memoriza estas 10 palabras. Tienes <strong>10 segundos</strong>.</p>
+        <div class="temporizador" id="temp-fase1">10</div>
+        <div class="barra-tiempo"><div class="barra-tiempo-interior" id="barra-fase1" style="width: 100%;"></div></div>
+        <div class="palabras-grid" id="palabras-fase1"></div>
+    </div>
+
+    <!-- ================= PANTALLA FASE 1: ESCRIBIR ================= -->
+    <div id="pantalla-fase1-escribir" class="pantalla">
+        <h2>✍️ Fase 1: Escribe las palabras que recuerdes</h2>
+        <p>Escribe las 10 palabras. No importa el orden. ¡Sé rápido!</p>
+        <div class="contador-vivo">Aciertos: <span id="aciertos-fase1">0</span> / 10</div>
+        <div class="input-group" id="inputs-fase1"></div>
+        <div style="text-align: center;">
+            <button onclick="finalizarFase1()">¡Listo! Continuar ➡️</button>
+        </div>
+    </div>
+
+    <!-- ================= PANTALLA FASE 2: ASOCIACIÓN VISUAL ================= -->
+    <div id="pantalla-fase2" class="pantalla">
+        <h2>🖼️ Fase 2: Asociación Visual</h2>
+        <p>Mira las palabras asociadas a dibujos. Esto ayudará a tu cerebro a crear conexiones más fuertes.</p>
+        <div class="contador-vueltas" id="contador-vueltas">Vuelta 1 de 3</div>
+        <div class="asociacion-grid" id="asociacion-grid"></div>
+        <div style="text-align: center; margin-top: 1rem;">
+            <button id="btn-siguiente-vuelta" onclick="siguienteVuelta()">Siguiente vuelta ➡️</button>
+        </div>
+    </div>
+
+    <!-- ================= PANTALLA FASE 3: ESCRIBIR ================= -->
+    <div id="pantalla-fase3" class="pantalla">
+        <h2>✍️ Fase 3: Escribe las palabras que recuerdes ahora</h2>
+        <p>Después de ver las asociaciones visuales, escribe las 10 palabras. ¿Recordarás más?</p>
+        <div class="contador-vivo">Aciertos: <span id="aciertos-fase3">0</span> / 10</div>
+        <div class="input-group" id="inputs-fase3"></div>
+        <div style="text-align: center;">
+            <button onclick="finalizarFase3()">¡Ver resultados! 🏁</button>
+        </div>
+    </div>
+
+    <!-- ================= PANTALLA RESULTADOS ================= -->
+    <div id="pantalla-resultados" class="pantalla">
+        <h2>🏆 ¡Resultados Finales!</h2>
+
+        <div class="resultado-caja">
+            <h3>📝 Fase 1 (Sin ayuda visual)</h3>
+            <div class="puntaje-grande" id="puntaje-fase1-display">0 / 10</div>
+            <ul class="lista-revision" id="revision-fase1"></ul>
+        </div>
+
+        <div class="resultado-caja">
+            <h3>🖼️ Fase 3 (Con asociación visual)</h3>
+            <div class="puntaje-grande" id="puntaje-fase3-display">0 / 10</div>
+            <ul class="lista-revision" id="revision-fase3"></ul>
+        </div>
+
+        <div class="comparativa">
+            <h3>📊 Comparación: ¿Mejoraste?</h3>
+            <div class="numeros">
+                <div class="numero-item">
+                    <div class="valor" id="comp-fase1">0</div>
+                    <div class="etiqueta">Fase 1</div>
+                </div>
+                <div class="numero-item">
+                    <div class="valor" id="comp-fase3">0</div>
+                    <div class="etiqueta">Fase 3</div>
+                </div>
+            </div>
+            <div class="mensaje-final" id="mensaje-final"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+            <button onclick="reiniciarJuego()">🔄 Jugar de nuevo</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ================= DATOS DEL JUEGO =================
+    // 10 palabras con sus emojis asociados
+    const PALABRAS = [
+        { texto: 'Árbol', emoji: '🌳' },
+        { texto: 'Sol', emoji: '☀️' },
+        { texto: 'Perro', emoji: '🐶' },
+        { texto: 'Casa', emoji: '🏠' },
+        { texto: 'Estrella', emoji: '⭐' },
+        { texto: 'Libro', emoji: '📚' },
+        { texto: 'Pelota', emoji: '⚽' },
+        { texto: 'Flor', emoji: '🌸' },
+        { texto: 'Coche', emoji: '🚗' },
+        { texto: 'Pez', emoji: '🐟' }
+    ];
+
+    const TIEMPO_FASE1 = 10; // segundos para memorizar
+    const VUELTAS_FASE2 = 3; // veces que se muestran las asociaciones
+
+    // Estado del juego
+    let fase1Aciertos = 0;
+    let fase3Aciertos = 0;
+    let fase1Respuestas = [];
+    let fase3Respuestas = [];
+    let vueltaActual = 1;
+    let tiempoRestante = TIEMPO_FASE1;
+    let intervaloFase1 = null;
+
+    // ================= FUNCIONES DE NAVEGACIÓN =================
+    function mostrarPantalla(id) {
+        document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
+        document.getElementById(id).classList.add('activa');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ================= INICIAR JUEGO =================
+    function iniciarJuego() {
+        // Resetear estado
+        fase1Aciertos = 0;
+        fase3Aciertos = 0;
+        fase1Respuestas = [];
+        fase3Respuestas = [];
+        vueltaActual = 1;
+        tiempoRestante = TIEMPO_FASE1;
+
+        // Preparar Fase 1: memorizar
+        prepararFase1Memorizar();
+        mostrarPantalla('pantalla-fase1');
+    }
+
+    // ================= FASE 1: MEMORIZAR =================
+    function prepararFase1Memorizar() {
+        const contenedor = document.getElementById('palabras-fase1');
+        contenedor.innerHTML = '';
+        PALABRAS.forEach(p => {
+            const tarjeta = document.createElement('div');
+            tarjeta.className = 'palabra-tarjeta';
+            tarjeta.textContent = p.texto;
+            contenedor.appendChild(tarjeta);
+        });
+
+        // Temporizador
+        tiempoRestante = TIEMPO_FASE1;
+        document.getElementById('temp-fase1').textContent = tiempoRestante;
+        document.getElementById('barra-fase1').style.width = '100%';
+
+        if (intervaloFase1) clearInterval(intervaloFase1);
+
+        intervaloFase1 = setInterval(() => {
+            tiempoRestante--;
+            document.getElementById('temp-fase1').textContent = tiempoRestante;
+            document.getElementById('barra-fase1').style.width = (tiempoRestante / TIEMPO_FASE1 * 100) + '%';
+
+            if (tiempoRestante <= 0) {
+                clearInterval(intervaloFase1);
+                prepararFase1Escribir();
+                mostrarPantalla('pantalla-fase1-escribir');
+            }
+        }, 1000);
+    }
+
+    // ================= FASE 1: ESCRIBIR =================
+    function prepararFase1Escribir() {
+        const contenedor = document.getElementById('inputs-fase1');
+        contenedor.innerHTML = '';
+        document.getElementById('aciertos-fase1').textContent = '0';
+
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            const label = document.createElement('label');
+            label.textContent = `Palabra ${i + 1}:`;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Escribe una palabra...';
+            input.dataset.index = i;
+            input.addEventListener('input', () => verificarAciertosFase1());
+            div.appendChild(label);
+            div.appendChild(input);
+            contenedor.appendChild(div);
+        }
+
+        // Enfocar el primer input
+        setTimeout(() => {
+            const primerInput = contenedor.querySelector('input');
+            if (primerInput) primerInput.focus();
+        }, 300);
+    }
+
+    function verificarAciertosFase1() {
+        const inputs = document.querySelectorAll('#inputs-fase1 input');
+        let aciertos = 0;
+        const respuestas = [];
+
+        inputs.forEach(input => {
+            const valor = input.value.trim().toLowerCase();
+            respuestas.push(valor);
+
+            // Verificar si la palabra está en la lista y no se ha contado ya
+            const esCorrecta = PALABRAS.some(p => p.texto.toLowerCase() === valor);
+            if (esCorrecta) {
+                aciertos++;
+            }
+        });
+
+        // Contar aciertos únicos (sin duplicados)
+        const respuestasCorrectasUnicas = new Set();
+        respuestas.forEach(r => {
+            if (PALABRAS.some(p => p.texto.toLowerCase() === r)) {
+                respuestasCorrectasUnicas.add(r);
+            }
+        });
+
+        fase1Aciertos = respuestasCorrectasUnicas.size;
+        document.getElementById('aciertos-fase1').textContent = fase1Aciertos;
+    }
+
+    function finalizarFase1() {
+        // Guardar respuestas
+        const inputs = document.querySelectorAll('#inputs-fase1 input');
+        fase1Respuestas = Array.from(inputs).map(input => input.value.trim().toLowerCase());
+
+        // Calcular aciertos reales (únicos)
+        const correctasUnicas = new Set();
+        fase1Respuestas.forEach(r => {
+            if (PALABRAS.some(p => p.texto.toLowerCase() === r)) {
+                correctasUnicas.add(r);
+            }
+        });
+        fase1Aciertos = correctasUnicas.size;
+
+        // Preparar Fase 2
+        vueltaActual = 1;
+        mostrarAsociaciones();
+        mostrarPantalla('pantalla-fase2');
+    }
+
+    // ================= FASE 2: ASOCIACIÓN VISUAL =================
+    function mostrarAsociaciones() {
+        const contenedor = document.getElementById('asociacion-grid');
+        contenedor.innerHTML = '';
+        document.getElementById('contador-vueltas').textContent = `Vuelta ${vueltaActual} de ${VUELTAS_FASE2}`;
+
+        // Mezclar el orden para que sea más interesante (opcional)
+        const palabrasMezcladas = [...PALABRAS].sort(() => Math.random() - 0.5);
+
+        palabrasMezcladas.forEach((p, index) => {
+            const item = document.createElement('div');
+            item.className = 'asociacion-item';
+            item.style.animationDelay = (index * 0.1) + 's';
+
+            const emoji = document.createElement('span');
+            emoji.className = 'emoji';
+            emoji.textContent = p.emoji;
+
+            const texto = document.createElement('span');
+            texto.className = 'texto';
+            texto.textContent = p.texto;
+
+            item.appendChild(emoji);
+            item.appendChild(texto);
+            contenedor.appendChild(item);
+        });
+
+        // Configurar botón
+        const btn = document.getElementById('btn-siguiente-vuelta');
+        if (vueltaActual >= VUELTAS_FASE2) {
+            btn.textContent = '¡Continuar a Fase 3! ➡️';
+            btn.onclick = () => {
+                prepararFase3Escribir();
+                mostrarPantalla('pantalla-fase3');
+            };
+        } else {
+            btn.textContent = 'Siguiente vuelta ➡️';
+            btn.onclick = siguienteVuelta;
+        }
+    }
+
+    function siguienteVuelta() {
+        vueltaActual++;
+        if (vueltaActual > VUELTAS_FASE2) {
+            prepararFase3Escribir();
+            mostrarPantalla('pantalla-fase3');
+        } else {
+            mostrarAsociaciones();
+        }
+    }
+
+    // ================= FASE 3: ESCRIBIR =================
+    function prepararFase3Escribir() {
+        const contenedor = document.getElementById('inputs-fase3');
+        contenedor.innerHTML = '';
+        document.getElementById('aciertos-fase3').textContent = '0';
+
+        for (let i = 0; i < 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            const label = document.createElement('label');
+            label.textContent = `Palabra ${i + 1}:`;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Escribe una palabra...';
+            input.dataset.index = i;
+            input.addEventListener('input', () => verificarAciertosFase3());
+            div.appendChild(label);
+            div.appendChild(input);
+            contenedor.appendChild(div);
+        }
+
+        setTimeout(() => {
+            const primerInput = contenedor.querySelector('input');
+            if (primerInput) primerInput.focus();
+        }, 300);
+    }
+
+    function verificarAciertosFase3() {
+        const inputs = document.querySelectorAll('#inputs-fase3 input');
+        const respuestas = [];
+
+        inputs.forEach(input => {
+            respuestas.push(input.value.trim().toLowerCase());
+        });
+
+        const correctasUnicas = new Set();
+        respuestas.forEach(r => {
+            if (PALABRAS.some(p => p.texto.toLowerCase() === r)) {
+                correctasUnicas.add(r);
+            }
+        });
+
+        fase3Aciertos = correctasUnicas.size;
+        document.getElementById('aciertos-fase3').textContent = fase3Aciertos;
+    }
+
+    function finalizarFase3() {
+        // Guardar respuestas
+        const inputs = document.querySelectorAll('#inputs-fase3 input');
+        fase3Respuestas = Array.from(inputs).map(input => input.value.trim().toLowerCase());
+
+        // Calcular aciertos reales
+        const correctasUnicas = new Set();
+        fase3Respuestas.forEach(r => {
+            if (PALABRAS.some(p => p.texto.toLowerCase() === r)) {
+                correctasUnicas.add(r);
+            }
+        });
+        fase3Aciertos = correctasUnicas.size;
+
+        // Mostrar resultados
+        mostrarResultados();
+        mostrarPantalla('pantalla-resultados');
+    }
+
+    // ================= RESULTADOS =================
+    function mostrarResultados() {
+        // Puntajes grandes
+        const display1 = document.getElementById('puntaje-fase1-display');
+        const display3 = document.getElementById('puntaje-fase3-display');
+
+        display1.textContent = `${fase1Aciertos} / 10`;
+        display3.textContent = `${fase3Aciertos} / 10`;
+
+        display1.className = 'puntaje-grande ' + (fase1Aciertos >= 7 ? 'bueno' : fase1Aciertos >= 4 ? 'regular' : 'malo');
+        display3.className = 'puntaje-grande ' + (fase3Aciertos >= 7 ? 'bueno' : fase3Aciertos >= 4 ? 'regular' : 'malo');
+
+        // Revisión Fase 1
+        const rev1 = document.getElementById('revision-fase1');
+        rev1.innerHTML = '';
+        PALABRAS.forEach(p => {
+            const li = document.createElement('li');
+            const acerto = fase1Respuestas.some(r => r === p.texto.toLowerCase());
+            li.className = acerto ? 'acerto' : 'fallo';
+            li.innerHTML = `<span class="check">${acerto ? '✅' : '❌'}</span> ${p.emoji} ${p.texto}`;
+            rev1.appendChild(li);
+        });
+
+        // Revisión Fase 3
+        const rev3 = document.getElementById('revision-fase3');
+        rev3.innerHTML = '';
+        PALABRAS.forEach(p => {
+            const li = document.createElement('li');
+            const acerto = fase3Respuestas.some(r => r === p.texto.toLowerCase());
+            li.className = acerto ? 'acerto' : 'fallo';
+            li.innerHTML = `<span class="check">${acerto ? '✅' : '❌'}</span> ${p.emoji} ${p.texto}`;
+            rev3.appendChild(li);
+        });
+
+        // Comparación
+        document.getElementById('comp-fase1').textContent = fase1Aciertos;
+        document.getElementById('comp-fase3').textContent = fase3Aciertos;
+
+        const mensajeFinal = document.getElementById('mensaje-final');
+        const diferencia = fase3Aciertos - fase1Aciertos;
+
+        if (diferencia > 0) {
+            mensajeFinal.className = 'mensaje-final mejoro';
+            mensajeFinal.innerHTML = `🎉 ¡Mejoraste ${diferencia} palabra${diferencia > 1 ? 's' : ''}! La asociación visual y la repetición fortalecieron tus conexiones neuronales. ¡Eso es neuroplasticidad en acción! 🧠✨`;
+        } else if (diferencia === 0) {
+            mensajeFinal.className = 'mensaje-final igual';
+            mensajeFinal.innerHTML = `🤔 Recordaste las mismas palabras. ¡Sigue practicando! La repetición constante es la clave para construir autopistas neuronales más fuertes. 💪`;
+        } else {
+            mensajeFinal.className = 'mensaje-final empeoro';
+            mensajeFinal.innerHTML = `😅 Esta vez recordaste ${Math.abs(diferencia)} menos. No te preocupes: el cerebro tiene días buenos y malos. ¡Inténtalo de nuevo y verás cómo mejora con la práctica! 🔄`;
+        }
+    }
+
+    // ================= REINICIAR =================
+    function reiniciarJuego() {
+        if (intervaloFase1) clearInterval(intervaloFase1);
+        iniciarJuego();
+    }
+</script>
+
+</body>
+</html>
